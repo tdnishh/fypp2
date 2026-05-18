@@ -1,0 +1,28 @@
+from usb_detector import detect_usb
+from file_scanner import scan_files
+from heuristic_engine import analyze
+from behavior_monitor import monitor
+from logger import log
+
+usb = detect_usb()
+
+if usb:
+    print("USB detected at:", usb)
+    files = scan_files(usb)
+
+    for f in files:
+        h_score = analyze(f)
+        b_score = monitor()
+        total = h_score + b_score
+
+        if total >= 7:
+            verdict = "MALICIOUS"
+        elif total >= 4:
+            verdict = "SUSPICIOUS"
+        else:
+            verdict = "SAFE"
+
+        log(f, total, verdict)
+        print(f, total, verdict)
+else:
+    print("No USB detected")
